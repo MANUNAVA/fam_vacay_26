@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riviera Maya — Open Setlist</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@300;400;500;600;700&family=Archivo:wght@400;500;600&display=swap');
+  :root {
+    --ink: #0a0a0a; --panel: #1c1c1c; --panel2: #242424;
+    --amber: #e8b14a; --vermilion: #d8412f; --teal: #3fa89a;
+    --bone: #f3ede1; --muted: #8a8378; --line: #2e2e2e;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--ink); color: var(--bone); font-family: 'Archivo', sans-serif; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .hero { padding: 4rem 1.5rem 2.2rem; border-bottom: 1px solid var(--line);
+    background: radial-gradient(120% 80% at 80% 0%, rgba(216,65,47,0.14), transparent 60%), radial-gradient(100% 90% at 10% 0%, rgba(232,177,74,0.10), transparent 55%);
+    text-align: center; }
+  .eyebrow { font-family: 'Oswald', sans-serif; font-weight: 500; letter-spacing: 0.42em; text-transform: uppercase; font-size: 0.7rem; color: var(--amber); margin-bottom: 1rem; }
+  .hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 12vw, 7rem); line-height: 0.85; color: var(--bone); text-shadow: 0 0 40px rgba(232,177,74,0.12); }
+  .hero h1 .flare { color: var(--vermilion); display: block; }
+  .hero .sub { font-family: 'Oswald', sans-serif; font-weight: 300; text-transform: uppercase; letter-spacing: 0.26em; font-size: 0.8rem; color: var(--muted); margin-top: 1.2rem; }
+  .ticket { display: inline-flex; align-items: center; gap: 0.8rem; margin-top: 1.5rem; padding: 0.5rem 1.2rem; border: 1px solid var(--line); border-radius: 100px;
+    font-family: 'Oswald', sans-serif; font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; background: rgba(255,255,255,0.02); }
+  .ticket b { color: var(--amber); font-weight: 600; }
+  .ticket span { width: 5px; height: 5px; border-radius: 50%; background: var(--vermilion); }
+  .legend { max-width: 820px; margin: 0 auto; padding: 1.4rem 1.2rem 0; display: flex; flex-wrap: wrap; gap: 0.5rem 1.4rem; justify-content: center; }
+  .legend .key { display: flex; align-items: center; gap: 0.45rem; font-family: 'Oswald', sans-serif; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .dot { width: 9px; height: 9px; border-radius: 50%; }
+  .dot.r { background: var(--vermilion); } .dot.a { background: var(--amber); } .dot.t { background: var(--teal); }
+  .daynav { position: sticky; top: 0; z-index: 50; display: flex; gap: 0.4rem; overflow-x: auto; padding: 0.85rem 1rem; margin-top: 1.2rem;
+    background: rgba(10,10,10,0.92); backdrop-filter: blur(12px); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); scrollbar-width: none; }
+  .daynav::-webkit-scrollbar { display: none; }
+  .daynav button { flex: 0 0 auto; font-family: 'Oswald', sans-serif; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.72rem;
+    color: var(--muted); background: transparent; border: 1px solid var(--line); border-radius: 100px; padding: 0.5rem 0.9rem; cursor: pointer; transition: all 0.18s ease; white-space: nowrap; }
+  .daynav button:hover { color: var(--bone); border-color: var(--muted); }
+  .daynav button.active { color: var(--ink); background: var(--amber); border-color: var(--amber); }
+  .daynav button.excur.active { background: var(--teal); border-color: var(--teal); color: var(--ink); }
+  .daynav button.flights.active { background: #5a8fd6; border-color: #5a8fd6; color: var(--ink); }
+  .daynav button .dn { font-weight: 700; margin-right: 0.3rem; }
+  main { max-width: 820px; margin: 0 auto; padding: 1.4rem 1.1rem 5rem; }
+  .day { display: none; animation: rise 0.4s ease; }
+  .day.show { display: block; }
+  @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .dayhead { display: flex; align-items: baseline; gap: 1rem; padding: 1.4rem 0 1rem; border-bottom: 2px solid var(--vermilion); margin-bottom: 0.4rem; }
+  .dayhead.tealtop { border-bottom-color: var(--teal); }
+  .dayhead .num { font-family: 'Bebas Neue', sans-serif; font-size: 3.2rem; line-height: 0.8; color: var(--amber); }
+  .dayhead.tealtop .num { color: var(--teal); }
+  .dayhead .meta h2 { font-family: 'Oswald', sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; font-size: 1.3rem; }
+  .dayhead .meta .date { font-family: 'Oswald', sans-serif; font-weight: 300; letter-spacing: 0.2em; text-transform: uppercase; font-size: 0.7rem; color: var(--muted); margin-top: 0.2rem; }
+  .dayhead .meta .vibe { font-size: 0.82rem; color: #cfc8ba; margin-top: 0.3rem; }
+  .block { padding: 1.3rem 0 0.4rem; }
+  .blockhead { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.9rem; }
+  .blockhead .clock { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--bone); letter-spacing: 0.03em; line-height: 1; }
+  .blockhead .band { flex: 1; height: 1px; background: var(--line); }
+  .blockhead .label { font-family: 'Oswald', sans-serif; font-weight: 500; text-transform: uppercase; letter-spacing: 0.18em; font-size: 0.68rem; color: var(--muted); }
+  .opts { display: grid; gap: 0.6rem; }
+  .opt { display: grid; grid-template-columns: auto 1fr; gap: 0.8rem; align-items: start; background: var(--panel); border: 1px solid var(--line); border-radius: 9px; padding: 0.8rem 0.95rem; border-left: 3px solid var(--line); }
+  .opt.r { border-left-color: var(--vermilion); } .opt.a { border-left-color: var(--amber); } .opt.t { border-left-color: var(--teal); }
+  .opt .ico { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; width: 30px; height: 30px; display: grid; place-items: center; border-radius: 50%; background: var(--panel2); color: var(--amber); margin-top: 0.1rem; }
+  .opt .body h4 { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 0.98rem; margin-bottom: 0.15rem; }
+  .opt .body p { font-size: 0.82rem; color: #cfc8ba; }
+  .opt .body .meta { font-family: 'Oswald', sans-serif; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-top: 0.4rem; }
+  .tipbar { margin-top: 1.4rem; background: rgba(232,177,74,0.07); border: 1px solid rgba(232,177,74,0.25); border-radius: 9px; padding: 0.85rem 1rem; font-size: 0.82rem; color: #e7dcc6; }
+  .tipbar b { color: var(--amber); font-family: 'Oswald', sans-serif; letter-spacing: 0.06em; }
+  .exintro { font-size: 0.9rem; color: #cfc8ba; margin: 0.4rem 0; }
+  .exgrid { display: grid; gap: 0.7rem; }
+  .excard { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 1rem 1.1rem; border-top: 3px solid var(--teal); }
+  .excard .top { display: flex; justify-content: space-between; align-items: baseline; gap: 0.6rem; }
+  .excard h4 { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 1.08rem; }
+  .excard .price { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--amber); line-height: 1; white-space: nowrap; letter-spacing: 0.02em; text-align: right; }
+  .excard .price small { font-family: 'Oswald', sans-serif; font-size: 0.58rem; color: var(--muted); display: block; letter-spacing: 0.1em; text-transform: uppercase; }
+  .excard p { font-size: 0.84rem; color: #cfc8ba; margin-top: 0.45rem; }
+  .excard .facts { display: flex; flex-wrap: wrap; gap: 0.4rem 1.1rem; margin-top: 0.6rem; }
+  .excard .fact { font-family: 'Oswald', sans-serif; font-size: 0.64rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .excard .fact b { color: var(--teal); }
+  /* FLIGHT CARDS */
+  .dayhead.bluetop { border-bottom-color: #5a8fd6; }
+  .dayhead.bluetop .num { color: #5a8fd6; }
+  .flcard { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 1.1rem 1.2rem; border-top: 3px solid #5a8fd6; margin-bottom: 0.9rem; }
+  .flcard .leg { font-family: 'Oswald', sans-serif; font-size: 0.64rem; letter-spacing: 0.2em; text-transform: uppercase; color: #5a8fd6; margin-bottom: 0.5rem; }
+  .flcard .route { display: flex; align-items: center; gap: 0.7rem; }
+  .flcard .ap { font-family: 'Bebas Neue', sans-serif; font-size: 2.4rem; line-height: 0.85; color: var(--bone); letter-spacing: 0.02em; }
+  .flcard .arrow { flex: 1; height: 1px; background: var(--line); position: relative; }
+  .flcard .arrow::after { content: "\2708"; position: absolute; right: -2px; top: 50%; transform: translateY(-50%); color: var(--amber); font-size: 0.8rem; background: var(--panel); padding-left: 4px; }
+  .flcard .city { font-family: 'Oswald', sans-serif; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-top: 0.15rem; }
+  .flcard .fl { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 1rem; margin-top: 0.9rem; }
+  .flcard .fl span { color: var(--amber); }
+  .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 0.9rem; }
+  .flfield { display: flex; flex-direction: column; gap: 0.25rem; }
+  .flfield .lab { font-family: 'Oswald', sans-serif; font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .flfield input { background: var(--panel2); border: 1px solid var(--line); border-radius: 7px; color: var(--bone); font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 0.95rem; padding: 0.5rem 0.6rem; width: 100%; }
+  .flfield input::placeholder { color: #5a564e; font-weight: 400; }
+  .flfield input:focus { outline: none; border-color: #5a8fd6; }
+  .flfield:nth-child(5) { grid-column: 1 / -1; }
+  /* INFO + RESOURCE TILES */
+  .dayhead.purptop { border-bottom-color: #b07ad8; }
+  .dayhead.purptop .num { color: #b07ad8; }
+  .dayhead.greentop { border-bottom-color: #6fc26f; }
+  .dayhead.greentop .num { color: #6fc26f; }
+  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 0.3rem; }
+  .tile { display: flex; flex-direction: column; gap: 0.3rem; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 0.9rem; text-decoration: none; color: var(--bone); transition: border-color 0.15s ease, transform 0.15s ease; border-left: 3px solid var(--line); }
+  .tile:hover { border-color: var(--muted); transform: translateY(-2px); }
+  .tile.live { border-left-color: var(--vermilion); }
+  .tile.ride { border-left-color: #6fc26f; }
+  .tile .emoji { font-size: 1.4rem; }
+  .tile h4 { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 0.95rem; }
+  .tile p { font-size: 0.74rem; color: #cfc8ba; line-height: 1.35; }
+  .tile .go { font-family: 'Oswald', sans-serif; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--amber); margin-top: auto; display: flex; align-items: center; gap: 0.35rem; }
+  .tile.live .go .live { width: 6px; height: 6px; border-radius: 50%; background: var(--vermilion); animation: pulse 1.6s infinite; }
+  .factbox { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 0.4rem 0.2rem; margin-top: 0.6rem; }
+  .factrow { display: flex; justify-content: space-between; gap: 1rem; padding: 0.6rem 0.9rem; border-bottom: 1px solid var(--line); font-size: 0.84rem; }
+  .factrow:last-child { border-bottom: none; }
+  .factrow .k { font-family: 'Oswald', sans-serif; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.68rem; color: var(--muted); flex: 0 0 auto; }
+  .factrow .v { text-align: right; color: var(--bone); }
+  .factrow .v b { color: var(--amber); }
+  .subhead { font-family: 'Oswald', sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.7rem; color: var(--bone); margin: 1.4rem 0 0.2rem; }
+  .daynav button.info.active { background: #b07ad8; border-color: #b07ad8; color: var(--ink); }
+  .daynav button.getaround.active { background: #6fc26f; border-color: #6fc26f; color: var(--ink); }
+  /* LIVE DATA PANELS */
+  .livebox { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.1rem; border-left: 3px solid var(--vermilion); margin-bottom: 0.6rem; }
+  .livebox .lhead { display: flex; align-items: center; gap: 0.55rem; margin-bottom: 0.65rem; }
+  .livebox .lhead .emoji { font-size: 1.3rem; }
+  .livebox .lhead h4 { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 1rem; flex: 1; }
+  .livebox .lhead .pill { font-family: 'Oswald', sans-serif; font-size: 0.56rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--vermilion); display: flex; align-items: center; gap: 0.35rem; }
+  .livebox .lhead .pill .live { width: 6px; height: 6px; border-radius: 50%; background: var(--vermilion); animation: pulse 1.6s infinite; }
+  .nowtemp { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; line-height: 0.85; color: var(--bone); letter-spacing: 0.02em; }
+  .nowtemp small { font-family: 'Oswald', sans-serif; font-size: 0.8rem; color: var(--muted); letter-spacing: 0.04em; }
+  .nowmeta { font-family: 'Oswald', sans-serif; font-size: 0.8rem; color: #cfc8ba; margin-top: 0.2rem; }
+  .fcrow { display: flex; gap: 0.4rem; margin-top: 0.9rem; overflow-x: auto; scrollbar-width: none; }
+  .fcrow::-webkit-scrollbar { display: none; }
+  .fcd { flex: 0 0 auto; text-align: center; background: var(--panel2); border-radius: 8px; padding: 0.5rem 0.6rem; min-width: 56px; }
+  .fcd .dy { font-family: 'Oswald', sans-serif; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .fcd .ic { font-size: 1.1rem; margin: 0.2rem 0; }
+  .fcd .hi { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 0.82rem; color: var(--bone); }
+  .fcd .lo { font-family: 'Oswald', sans-serif; font-size: 0.72rem; color: var(--muted); }
+  .rate { font-family: 'Bebas Neue', sans-serif; font-size: 2.3rem; line-height: 0.9; color: var(--amber); letter-spacing: 0.02em; }
+  .rate small { font-family: 'Oswald', sans-serif; font-size: 0.78rem; color: var(--muted); letter-spacing: 0.06em; }
+  .ratehint { font-family: 'Oswald', sans-serif; font-size: 0.72rem; color: #cfc8ba; margin-top: 0.35rem; }
+  .lstate { font-family: 'Oswald', sans-serif; font-size: 0.8rem; color: var(--muted); letter-spacing: 0.04em; }
+  .lstate a { color: var(--amber); }
+  .lrefresh { background: var(--panel2); border: 1px solid var(--line); color: var(--bone); font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; border-radius: 100px; padding: 0.32rem 0.7rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.35rem; transition: all 0.15s ease; }
+  .lrefresh:hover { border-color: var(--amber); color: var(--amber); }
+  .lrefresh.spin .ri { animation: spin 0.6s linear infinite; display: inline-block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .lstamp { font-family: 'Oswald', sans-serif; font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-top: 0.7rem; }
+  .flbtn { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1rem; padding: 0.65rem 1.1rem; background: #5a8fd6; color: #07101e; border-radius: 100px; text-decoration: none; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; transition: filter 0.15s ease; }
+  .flbtn:hover { filter: brightness(1.1); }
+  .flbtn .live { width: 7px; height: 7px; border-radius: 50%; background: var(--vermilion); animation: pulse 1.6s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+  footer { text-align: center; padding: 2.4rem 1.5rem 3.5rem; border-top: 1px solid var(--line); color: var(--muted); font-family: 'Oswald', sans-serif; font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; }
+  footer .big { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--vermilion); letter-spacing: 0.04em; margin-bottom: 0.4rem; }
+  @media (max-width: 480px) { .opt { grid-template-columns: 1fr; } .opt .ico { display: none; } .excard .top { flex-direction: column; } .excard .price { text-align: left; } }
+  @media (prefers-reduced-motion: reduce) { .day { animation: none; } }
+</style>
+</head>
+<body>
+  <header class="hero">
+    <div class="eyebrow">Hard Rock Hotel · Riviera Maya</div>
+    <h1>Open Setlist<span class="flare">Pick Your Day</span></h1>
+    <div class="sub">Resort rhythm · Party of five · Build it as you go</div>
+    <div class="ticket"><b>Jul 15</b> AA 2874 \u00b7 10:01a<span></span>In<span></span>Out AA 1601 \u00b7 11:00a <b>Jul 21</b></div>
+  </header>
+  <div class="legend">
+    <div class="key"><span class="dot r"></span>High energy</div>
+    <div class="key"><span class="dot a"></span>Easy / anytime</div>
+    <div class="key"><span class="dot t"></span>Teen pick</div>
+  </div>
+  <nav class="daynav" id="daynav"></nav>
+  <main id="stage"></main>
+  <footer>
+    <div class="big">Nothing's locked</div>
+    Tour prices are per person unless noted, subject to change · Book via concierge or in-room tablet
+  </footer>
+<script>
+const trip = [
+  { dow:"Wed", date:"July 15", title:"Arrival", vibe:"Land, settle, keep it loose. No excursions today.",
+    blocks:[
+      { clock:"10:01 AM", label:"Departure", opts:[
+        {c:"a",i:"\u2708",h:"AA 2874 \u2014 DFW \u2192 CUN",p:"American Airlines, nonstop. Departs DFW 10:01 AM, arrives Cancun 12:47 PM. Confirmation YKODOX. Be at DFW ~3 hrs early; passports for all five.",meta:"Seats 28C 28D 25F 22F 23F"} ]},
+      { clock:"12:47 PM", label:"On landing", opts:[
+        {c:"a",i:"\u2708",h:"Amstar shared transfer \u2192 resort",p:"After baggage and Customs, exit the terminal \u2014 don\u2019t engage greeters inside. Find Amstar reps in bright blue shirts with signs outside. ~1 hr to Puerto Aventuras.",meta:"Amstar \u00b7 booked for 5"},
+        {c:"a",i:"K",h:"Check in \u2014 grab wristbands",p:"Hotel confirmation 3382661. Your bracelet is your room key (no key cards, no towel cards). Get wristbands even before the room\u2019s ready.",meta:"Deluxe Grand Sky Terrace"} ]},
+      { clock:"Afternoon", label:"Settle in", opts:[
+        {c:"a",i:"K",h:"Settle into the suite",p:"Deluxe Grand Sky Terrace \u2014 two bedrooms plus a private rooftop terrace. Sort beds, find the terrace hydro tub. The in-room tablet orders toiletries, fridge refills, and shows live restaurant menus/hours.",meta:"Two-bedroom"},
+        {c:"a",i:"\u2248",h:"First beach walk",p:"Stroll the sheltered lagoon beach. Beaches sit behind a rock retaining wall, so they stay calm and usable even on windy or sargassum days.",meta:"Private beach"} ]},
+      { clock:"Evening", label:"Dinner + night", opts:[
+        {c:"a",i:"\u2668",h:"Buffet dinner (no reservation)",p:"Keep night one simple. \u00c0-la-carte spots are now first-come, first-served, so the buffet is the no-stress call tonight.",meta:"Anytime"},
+        {c:"t",i:"\u266a",h:"Lobby live music",p:"Ease in with a drink and the nightly lobby band.",meta:"Teen ok"} ]} ],
+    tip:"<b>Day one:</b> book spa treatments and tours now to lock the best times \u2014 5+ night stays get priority tour rates. Confirm your $1,200 resort credit is on file." },
+  { dow:"Thu", date:"July 16", title:"Splash Day", vibe:"Stay on property and hit the water hard.",
+    blocks:[
+      { clock:"9\u201310 AM", label:"Morning", opts:[
+        {c:"a",i:"\u2615",h:"Breakfast + claim chairs early",p:"Good loungers go fast in summer \u2014 stake a spot before 10. Drink service comes right to your beach and pool chair.",meta:"Pool deck"} ]},
+      { clock:"10 AM\u20131 PM", label:"Main event", opts:[
+        {c:"t",i:"W",h:"Rockaway Bay Waterpark",p:"9 kid/teen slides plus 6 high-speed adult slides. The teen's home base. Go before peak sun.",meta:"On-site \u00b7 Teen pick"},
+        {c:"a",i:"\u2248",h:"Beach + included snorkel",p:"Exclusive saltwater snorkel areas right off the private beach for the calmer crowd.",meta:"Private beach"} ]},
+      { clock:"1\u20132 PM", label:"Lunch", opts:[
+        {c:"a",i:"\u2668",h:"Poolside lunch buffet",p:"Eat right at your pool chair \u2014 lunch buffet served poolside, plus swim-up bars.",meta:"Pool"} ]},
+      { clock:"Afternoon", label:"2\u20135 PM", opts:[
+        {c:"t",i:"\u26a1",h:"Vibe City: laser tag + trampolines",p:"Indoor entertainment zone \u2014 a great midday heat-break for the teen.",meta:"Waiver needed \u00b7 Teen pick"},
+        {c:"a",i:"\u263c",h:"Rock Spa or quiet pool",p:"Adults peel off for a treatment (resort credit applies) while the kid plays.",meta:"Resort credit"} ]},
+      { clock:"Evening", label:"Show night", opts:[
+        {c:"r",i:"\u2605",h:"Theater production show",p:"Catch the main nightly show, then a first-come \u00e0-la-carte dinner \u2014 arrive a bit early to beat the line.",meta:"Theater"} ]} ],
+    tip:"<b>Once, early:</b> sign the Vibe City waiver for the teen so there's no paperwork delay when they want to jump in." },
+  { dow:"Fri", date:"July 17", title:"Tulum + Cenote", vibe:"Off-property adventure. Early start beats the heat and crowds. (See Tours tab.)",
+    blocks:[
+      { clock:"7:30 AM", label:"Roll out", opts:[
+        {c:"r",i:"\u25b2",h:"Tulum ruins \u2014 first entry",p:"Cliffside Mayan ruins over the Caribbean, only ~30 min south. Brutal heat by midday, so go at opening.",meta:"\u2248 30 min \u00b7 High energy"} ]},
+      { clock:"11 AM", label:"Cool down", opts:[
+        {c:"t",i:"\u25cb",h:"Cenote swim",p:"Pair Tulum with a jungle cenote on the way back \u2014 freshwater cave swimming, the perfect heat reset.",meta:"Riviera Maya \u00b7 Teen pick"} ]},
+      { clock:"Afternoon", label:"Back by ~2", opts:[
+        {c:"a",i:"\u263c",h:"Pool + hammock recovery",p:"Low-effort afternoon after the early start. Private balcony hammocks too.",meta:"On-site"},
+        {c:"a",i:"\u2668",h:"Rock Spa for the adults",p:"Burn resort credit while the teen hits the arcade or teen lounge.",meta:"Resort credit"} ]},
+      { clock:"Evening", label:"Dinner", opts:[
+        {c:"a",i:"\u2668",h:"Low-key dinner",p:"Easy restaurant tonight \u2014 save the marquee meal for later in the week.",meta:"Anytime"} ]} ],
+    tip:"<b>Logistics:</b> book the private Tulum + cenote tour through the concierge so a van picks you up at the lobby \u2014 easiest with five people." },
+  { dow:"Sat", date:"July 18", title:"Sea Day", vibe:"Ocean-focused, light on logistics.",
+    blocks:[
+      { clock:"Morning", label:"9\u201312", opts:[
+        {c:"a",i:"\u2248",h:"House-reef snorkeling",p:"Exclusive saltwater snorkel areas on property. Gear included, no fee.",meta:"Private beach"},
+        {c:"t",i:"\u26f5",h:"Kayaks + watersports",p:"Non-motorized watersports, volleyball, and basketball all included.",meta:"Teen pick"} ]},
+      { clock:"Midday", label:"Optional splurge", opts:[
+        {c:"r",i:"\ud83d\udc2c",h:"Dolphin Discovery",p:"~10-min drive. Swim-with-dolphins programs book up weeks out \u2014 reserve ahead. (See Tours.)",meta:"\u2248 10 min \u00b7 Extra cost"} ]},
+      { clock:"Afternoon", label:"Chill", opts:[
+        {c:"a",i:"\u263c",h:"Beach hammocks + drinks",p:"Do-nothing block. Earned it by day four.",meta:"Beach"} ]},
+      { clock:"Evening", label:"Family night", opts:[
+        {c:"t",i:"\ud83c\udfb3",h:"Bowling alley",p:"On-site lanes (resort credit applies to select services). Easy mixed-age crowd-pleaser.",meta:"On-site \u00b7 Teen pick"} ]} ],
+    tip:"<b>Sargassum note:</b> if seaweed shows up, the rock-walled beaches stay calm and swimmable \u2014 and the pools are always a clean backup." },
+  { dow:"Sun", date:"July 19", title:"Flex Day", vibe:"Big park OR full resort-chill. Read the room at breakfast.",
+    blocks:[
+      { clock:"9 AM", label:"Option A \u2014 go big", opts:[
+        {c:"r",i:"X",h:"Xcaret or Xel-H\u00e1 park",p:"Underground rivers, snorkeling, wildlife, the famous Xcaret night show. Full-day commitment. (See Tours.)",meta:"\u2248 20\u201325 min \u00b7 High energy"} ]},
+      { clock:"All day", label:"Option B \u2014 stay put", opts:[
+        {c:"t",i:"\u25b2",h:"Rock climbing wall",p:"Bouldering (4+) and an 8m vertical wall (6+). Teen-friendly challenge on-site.",meta:"On-site \u00b7 Teen pick"},
+        {c:"a",i:"W",h:"Round two at the water park",p:"Repeat the week's favorites with zero logistics.",meta:"On-site"},
+        {c:"a",i:"\u2661",h:"Adults slip to the Heaven side",p:"Quiet adults-only pools, private beach, and upscale dining while the teen self-entertains.",meta:"21+ areas"} ]},
+      { clock:"Evening", label:"Best meal", opts:[
+        {c:"r",i:"\u2668",h:"Marquee dinner \u2014 steakhouse / teppanyaki",p:"Go early since \u00e0-la-carte is first-come. Usually the standout meal of the trip.",meta:"Specialty dining"} ]} ],
+    tip:"<b>Pacing:</b> day five is the right time for an excursion-or-relax choice \u2014 keeps both the teen and the adults happy." },
+  { dow:"Mon", date:"July 20", title:"Last Full Day", vibe:"Spend the credit, repeat the favorites, send-off dinner.",
+    blocks:[
+      { clock:"Morning", label:"Use it up", opts:[
+        {c:"a",i:"\u2668",h:"Final spa / salon / bowling",p:"Resort credit doesn't roll over \u2014 spend every dollar today.",meta:"Resort credit"} ]},
+      { clock:"Afternoon", label:"Encore", opts:[
+        {c:"t",i:"\u2605",h:"Repeat the week's winner",p:"Whatever won \u2014 water park, beach, climbing \u2014 do it once more.",meta:"Your call \u00b7 Teen pick"} ]},
+      { clock:"Evening", label:"Send-off", opts:[
+        {c:"r",i:"\u263c",h:"Sunset cocktails + farewell dinner",p:"Drinks (and mocktails for the teen), then the last big dinner.",meta:"Beach"},
+        {c:"a",i:"\u2708",h:"Confirm departure transfer time",p:"Lock your airport pickup tonight and start pre-packing.",meta:"Plan ahead"} ]} ],
+    tip:"<b>Before bed:</b> reconfirm airport pickup, pre-pack, and note check-out is noon." },
+  { dow:"Tue", date:"July 21", title:"Check-out", vibe:"One last beach hour, then out.",
+    blocks:[
+      { clock:"By 12 PM", label:"Wrap up", opts:[
+        {c:"a",i:"K",h:"Check out",p:"Settle any incidentals (pay-at-property balance ~$7.40). Ask for a luggage-hold wristband \u2014 your flight isn\u2019t until 11 AM, but Amstar pickup is earlier, so plan around the ride.",meta:"Front desk"} ]},
+      { clock:"Pickup", label:"Amstar transfer", opts:[
+        {c:"a",i:"\u2708",h:"Amstar \u2192 CUN airport",p:"Be checked out and at your pickup spot 15 min before the scheduled time. Reconfirm the pickup time 24 hrs ahead via Amstar at the hotel or +52 998 881 9500. ~1 hr drive.",meta:"Reconfirm 24 hrs prior"} ]},
+      { clock:"11:00 AM", label:"Fly home", opts:[
+        {c:"a",i:"\u2708",h:"AA 1601 \u2014 CUN \u2192 DFW",p:"American Airlines, nonstop. Departs Cancun 11:00 AM, arrives DFW 2:06 PM. Confirmation YKODOX. Check in early; CUN security runs slow in summer.",meta:"Seats 30B 30C 30D 30E 30F"} ]} ],
+    tip:"<b>Buffer up:</b> with an 11 AM flight, your Amstar pickup will likely be around 7\u20137:30 AM. Reconfirm the exact time the day before \u2014 don\u2019t guess it." },
+];
+const excursions = {
+  intro:"Book through the concierge, tour desk, or in-room tablet. Resort credit can offset tour and spa costs \u2014 you pay only a small percentage of the credited value. Prices are per person unless noted and subject to change; confirm at booking.",
+  groups:[
+    { label:"Closest & easiest", items:[
+      {h:"Punta Venado Eco-Park", price:"$$", per:"varies", p:"The nearest activity \u2014 ~20 min. ATVs, wave runners, horseback riding on the beach, snorkeling, plus a hot lunch. Great low-commitment adventure day for mixed ages.", facts:[["Drive","\u2248 20 min"],["Good for","All ages"]]},
+      {h:"Dolphin Discovery", price:"$$$", per:"per person", p:"~10-min drive. Swim-with-dolphins program (about 30 min in-water). Books up weeks ahead in summer \u2014 reserve early. A combined Tulum + dolphin swim package is also offered.", facts:[["Drive","\u2248 10 min"],["Note","Reserve early"]]} ]},
+    { label:"Ruins & culture", items:[
+      {h:"Tulum Ruins + Cenote (private)", price:"$$", per:"per van", p:"Private air-conditioned van from the lobby to the only Mayan ruins built facing the Caribbean, then a jungle cenote swim. Half day. The flexible, crowd-skipping way to do Tulum with five people.", facts:[["Drive","\u2248 30 min"],["Length","Half day"]]},
+      {h:"Chich\u00e9n Itz\u00e1 + Cenote + Valladolid", price:"$$$", per:"per person", p:"Full-day trip to the world-famous UNESCO Mayan city, a cenote swim, and the colonial town of Valladolid. Long day (early start, ~2 hrs each way) but a bucket-list classic.", facts:[["Length","Full day"],["Pace","Long, worth it"]]} ]},
+    { label:"Nature parks (lunch included)", items:[
+      {h:"Xcaret", price:"$$$", per:"per person", p:"50+ natural and cultural attractions \u2014 underground rivers, snorkeling, wildlife, and the spectacular evening show. The single best full-day park for a family. ~20\u201325 min away.", facts:[["Drive","\u2248 25 min"],["Highlight","Night show"]]},
+      {h:"Xel-H\u00e1", price:"$$$", per:"per person", p:"Natural water park \u2014 unlimited snorkeling in a Caribbean inlet, the tallest waterslide in the Riviera Maya, cliff jumping, jungle bike trails, buffet and open bar. Often paired with a Tulum morning.", facts:[["Combo","+ Tulum option"],["Kids 5\u201311","~25% off"]]},
+      {h:"Xenotes (4 cenotes)", price:"$$", per:"per person", p:"Visit all four cenote types \u2014 open, semi-open, cavern, and ancient \u2014 along the Ruta de los Cenotes. Kayaking, rappelling, zip lines, swimming. Cooler, shadier alternative to a beach day.", facts:[["Type","Cenote circuit"],["Vibe","Cool & shady"]]} ]},
+    { label:"Adrenaline", items:[
+      {h:"ATV + Zip Line + Cenote", price:"$109", per:"per person", p:"Jungle ATV trail ride, a zip line circuit, and a cenote swim to finish. ~5 hours. High-energy combo the teen will love (age/height limits apply for driving).", facts:[["Length","\u2248 5 hrs"],["Teen","Great pick"]]},
+      {h:"Bacalar \u2014 Lagoon of 7 Colors", price:"$$$", per:"per person", p:"Full-day trip south to a stunning turquoise freshwater lagoon fed by cenotes. Quieter and more scenic than the parks. A long drive, best for a group wanting something off the tourist track.", facts:[["Length","Full day"],["Drive","Far south"]]} ]},
+    { label:"On the water", items:[
+      {h:"Private boat charter", price:"$$$$", per:"per group", p:"Charter a boat for just your party \u2014 set your own pace, snorkel stops, and cruising. Premium option for a special day on the Caribbean.", facts:[["Type","Private"],["Good for","Special day"]]},
+      {h:"Akumal sea-turtle snorkel", price:"$$", per:"per person", p:"Snorkel calm Akumal Bay where green sea turtles graze. Short drive, gentle water, magical for all ages.", facts:[["Drive","Nearby"],["Highlight","Sea turtles"]]} ]},
+  ],
+  tip:"<b>Smart move:</b> apply resort credit to tours and spa first (you pay only a fraction of the credited value), then use cash for anything credit doesn't cover. The $109 ATV combo and the private Tulum van are strong value for your group."
+};
+const stage = document.getElementById('stage');
+const daynav = document.getElementById('daynav');
+trip.forEach((d, i) => {
+  const btn = document.createElement('button');
+  btn.innerHTML = '<span class="dn">' + (i+1) + '</span>' + d.dow;
+  btn.onclick = () => show(i);
+  if (i === 0) btn.classList.add('active');
+  daynav.appendChild(btn);
+  const day = document.createElement('section');
+  day.className = 'day' + (i === 0 ? ' show' : '');
+  day.dataset.i = i;
+  let html = '<div class="dayhead"><div class="num">' + (i+1) + '</div><div class="meta"><h2>' + d.title + '</h2><div class="date">' + d.dow + ' \u00b7 ' + d.date + '</div><div class="vibe">' + d.vibe + '</div></div></div>';
+  d.blocks.forEach(b => {
+    html += '<div class="block"><div class="blockhead"><div class="clock">' + b.clock + '</div><div class="band"></div><div class="label">' + b.label + '</div></div><div class="opts">';
+    b.opts.forEach(o => {
+      html += '<div class="opt ' + o.c + '"><div class="ico">' + o.i + '</div><div class="body"><h4>' + o.h + '</h4><p>' + o.p + '</p><div class="meta">' + o.meta + '</div></div></div>';
+    });
+    html += '</div></div>';
+  });
+  if (d.tip) html += '<div class="tipbar">' + d.tip + '</div>';
+  day.innerHTML = html;
+  stage.appendChild(day);
+});
+const exIndex = trip.length;
+const exBtn = document.createElement('button');
+exBtn.className = 'excur';
+exBtn.innerHTML = '<span class="dn">\u25c8</span>Tours';
+exBtn.onclick = () => show(exIndex);
+daynav.appendChild(exBtn);
+const exDay = document.createElement('section');
+exDay.className = 'day';
+exDay.dataset.i = exIndex;
+let exHtml = '<div class="dayhead tealtop"><div class="num">\u25c8</div><div class="meta"><h2>Available Excursions</h2><div class="date">Off-resort \u00b7 Any day</div></div></div><p class="exintro">' + excursions.intro + '</p>';
+excursions.groups.forEach(g => {
+  exHtml += '<div class="block"><div class="blockhead"><div class="clock" style="font-size:1.1rem;color:var(--teal)">' + g.label + '</div><div class="band"></div></div><div class="exgrid">';
+  g.items.forEach(it => {
+    exHtml += '<div class="excard"><div class="top"><h4>' + it.h + '</h4><div class="price">' + it.price + '<small>' + it.per + '</small></div></div><p>' + it.p + '</p><div class="facts">' + it.facts.map(f => '<span class="fact">' + f[0] + ': <b>' + f[1] + '</b></span>').join('') + '</div></div>';
+  });
+  exHtml += '</div></div>';
+});
+exHtml += '<div class="tipbar">' + excursions.tip + '</div>';
+exDay.innerHTML = exHtml;
+stage.appendChild(exDay);
+
+// FLIGHTS TAB
+const flights = [
+  { id:"out", leg:"Outbound", from:"DFW", fromCity:"Dallas\u2013Fort Worth", to:"CUN", toCity:"Cancun", date:"Wed, Jul 15", num:"AA 2874",
+    pre:{ departs:"10:01 AM", arrives:"12:47 PM", seats:"28C 28D 25F 22F 23F", gate:"", conf:"YKODOX" } },
+  { id:"ret", leg:"Return", from:"CUN", fromCity:"Cancun", to:"DFW", toCity:"Dallas\u2013Fort Worth", date:"Tue, Jul 21", num:"AA 1601",
+    pre:{ departs:"11:00 AM", arrives:"2:06 PM", seats:"30B 30C 30D 30E 30F", gate:"", conf:"YKODOX" } },
+];
+const flIndex = trip.length + 1;
+const flBtn = document.createElement('button');
+flBtn.className = 'flights';
+flBtn.innerHTML = '<span class="dn">\u2708</span>Flights';
+flBtn.onclick = () => show(flIndex);
+daynav.appendChild(flBtn);
+
+// load any saved values
+let flData = {};
+try { flData = JSON.parse(localStorage.getItem('hrrm_flights') || '{}'); } catch(e) { flData = {}; }
+function flSave() {
+  try { localStorage.setItem('hrrm_flights', JSON.stringify(flData)); } catch(e) {}
+}
+function flGet(id, field) {
+  if (flData[id] && flData[id][field] !== undefined && flData[id][field] !== '') return flData[id][field];
+  const f = flights.find(x => x.id === id);
+  return (f && f.pre && f.pre[field]) ? f.pre[field] : '';
+}
+
+const flDay = document.createElement('section');
+flDay.className = 'day';
+flDay.dataset.i = flIndex;
+let flHtml = '<div class="dayhead bluetop"><div class="num">\u2708</div><div class="meta"><h2>Flights</h2><div class="date">American Airlines \u00b7 Tap fields to edit</div></div></div>';
+flHtml += '<p class="exintro">Your confirmed details are filled in (conf. YKODOX). Add the gate when you have it. Edits save to this device. The button opens American\u2019s live status for current gate and delays.</p>';
+flights.forEach(f => {
+  const url = 'https://www.aa.com/travelInformation/flights/status?flightNumber=' + f.num.replace('AA ','') + '&airlineCode=AA';
+  flHtml += '<div class="flcard">'
+    + '<div class="leg">' + f.leg + ' \u00b7 ' + f.date + '</div>'
+    + '<div class="route">'
+      + '<div><div class="ap">' + f.from + '</div><div class="city">' + f.fromCity + '</div></div>'
+      + '<div class="arrow"></div>'
+      + '<div style="text-align:right"><div class="ap">' + f.to + '</div><div class="city">' + f.toCity + '</div></div>'
+    + '</div>'
+    + '<div class="fl">Flight <span>' + f.num + '</span></div>'
+    + '<div class="fields">'
+      + flField(f.id, 'departs', 'Departs', 'e.g. 9:15 AM')
+      + flField(f.id, 'arrives', 'Arrives', 'e.g. 12:40 PM')
+      + flField(f.id, 'seats', 'Seats', 'e.g. 14A\u201314E')
+      + flField(f.id, 'gate', 'Gate', 'e.g. D22')
+      + flField(f.id, 'conf', 'Confirmation', 'e.g. ABCDEF')
+    + '</div>'
+    + '<a class="flbtn" href="' + url + '" target="_blank" rel="noopener"><span class="live"></span>Check live status</a>'
+  + '</div>';
+});
+flHtml += '<div class="tipbar"><b>For push alerts:</b> add both flight numbers to \u201cTrips\u201d in the American Airlines app and turn on notifications \u2014 it sends delays, gate changes, and boarding automatically. Edits here save only to this device/browser.</div>';
+flDay.innerHTML = flHtml;
+stage.appendChild(flDay);
+
+function flField(id, field, label, placeholder) {
+  const val = flGet(id, field).replace(/"/g, '&quot;');
+  return '<label class="flfield"><span class="lab">' + label + '</span>'
+    + '<input type="text" data-id="' + id + '" data-field="' + field + '" value="' + val + '" placeholder="' + placeholder + '" autocomplete="off"></label>';
+}
+
+// save on edit
+flDay.addEventListener('input', e => {
+  const el = e.target;
+  if (el.tagName === 'INPUT' && el.dataset.id) {
+    const id = el.dataset.id, field = el.dataset.field;
+    if (!flData[id]) flData[id] = {};
+    flData[id][field] = el.value;
+    flSave();
+  }
+});
+
+// ---------- GOOD TO KNOW (live links + fixed reference) ----------
+const gtkIndex = trip.length + 2;
+const gtkBtn = document.createElement('button');
+gtkBtn.className = 'info';
+gtkBtn.innerHTML = '<span class="dn">\u2600</span>Good to Know';
+gtkBtn.onclick = () => show(gtkIndex);
+daynav.appendChild(gtkBtn);
+
+const liveTiles = [
+  { cls:"live", emoji:"\ud83c\udf0a", h:"Sargassum tracker", p:"Daily seaweed outlook for the Riviera Maya coast \u2014 handy in summer.", go:"See today\u2019s map", url:"https://www.google.com/search?q=sargassum+riviera+maya+today" },
+  { cls:"live", emoji:"\ud83c\udf74", h:"Restaurant hours", p:"Resort dining times shift \u2014 your in-room tablet has the live daily list.", go:"On the room tablet", url:"https://hotel.hardrock.com/riviera-maya/eat-and-drink.aspx" },
+];
+
+let gtkHtml = '<div class="dayhead purptop"><div class="num">\u2600</div><div class="meta"><h2>Good to Know</h2><div class="date">Live data + cheat sheet</div></div></div>';
+gtkHtml += '<p class="exintro">Weather and the peso rate pull live every time you open the page. Sargassum and dining hours are one-tap links. The cheat sheet below never changes.</p>';
+
+// live weather panel
+gtkHtml += '<div class="subhead">Live now \u2728</div>';
+gtkHtml += '<div class="livebox" id="wxbox">'
+  + '<div class="lhead"><span class="emoji">\u26c5</span><h4>Weather \u00b7 Puerto Aventuras</h4>'
+  + '<button class="lrefresh" id="wxrefresh"><span class="ri">\u21bb</span>Refresh</button></div>'
+  + '<div id="wxbody"><div class="lstate">Loading forecast\u2026</div></div></div>';
+// live rate panel
+gtkHtml += '<div class="livebox" id="fxbox" style="border-left-color:var(--amber)">'
+  + '<div class="lhead"><span class="emoji">\ud83d\udcb1</span><h4>USD \u2192 Mexican Peso</h4>'
+  + '<button class="lrefresh" id="fxrefresh"><span class="ri">\u21bb</span>Refresh</button></div>'
+  + '<div id="fxbody"><div class="lstate">Loading rate\u2026</div></div></div>';
+
+// link tiles
+gtkHtml += '<div class="subhead">Tap for today\u2019s info</div><div class="tiles">';
+liveTiles.forEach(t => {
+  gtkHtml += '<a class="tile ' + t.cls + '" href="' + t.url + '" target="_blank" rel="noopener">'
+    + '<div class="emoji">' + t.emoji + '</div><h4>' + t.h + '</h4><p>' + t.p + '</p>'
+    + '<div class="go"><span class="live"></span>' + t.go + '</div></a>';
+});
+gtkHtml += '</div>';
+gtkHtml += '<div class="subhead">Pocket cheat sheet \ud83e\udd65</div><div class="factbox">'
+  + factrow('Party', '5 travelers \u00b7 the Navarrette family')
+  + factrow('Hotel conf.', '<b>3382661</b> \u00b7 Hard Rock Riviera Maya')
+  + factrow('Flight conf.', '<b>YKODOX</b> \u00b7 American Airlines')
+  + factrow('Room', 'Deluxe Grand Sky Terrace (2-bedroom)')
+  + factrow('Currency', 'Mexican Peso \u00b7 <b>USD widely accepted</b>')
+  + factrow('Tipping', 'Optional but loved \u00b7 ~$1\u20132 USD / drink or bag')
+  + factrow('Tap water', 'Stick to bottled \u00b7 resort water is filtered')
+  + factrow('Outlets', 'Same as the US \u2014 no adapter needed')
+  + factrow('Time zone', 'Eastern (EST) \u00b7 same as Dallas in summer')
+  + factrow('Sunscreen', 'Bring <b>reef-safe</b> \u2014 required for cenotes & parks')
+  + factrow('Passports', 'Required for all 5 \u00b7 carry for excursions')
+  + factrow('Amstar 24/7', 'MX +52 998 881 9500 \u00b7 US 800 895 3000')
+  + factrow('Resort phone', '+52 984 875 1100')
+  + factrow('Emergency', 'Dial <b>911</b> in Mexico')
+  + '</div>';
+gtkHtml += '<div class="tipbar"><b>Reef-safe rule:</b> regular sunscreen is banned at cenotes and eco-parks to protect the water \u2014 pack a reef-safe bottle or you\u2019ll be buying it there.</div>';
+
+const gtkDay = document.createElement('section');
+gtkDay.className = 'day';
+gtkDay.dataset.i = gtkIndex;
+gtkDay.innerHTML = gtkHtml;
+stage.appendChild(gtkDay);
+
+function factrow(k, v) { return '<div class="factrow"><span class="k">' + k + '</span><span class="v">' + v + '</span></div>'; }
+
+// ---------- GET AROUND (transport links) ----------
+const gaIndex = trip.length + 3;
+const gaBtn = document.createElement('button');
+gaBtn.className = 'getaround';
+gaBtn.innerHTML = '<span class="dn">\u25b8</span>Get Around';
+gaBtn.onclick = () => show(gaIndex);
+daynav.appendChild(gaBtn);
+
+const rideTiles = [
+  { emoji:"\ud83d\ude90", h:"Amstar (your transfer)", p:"Your booked round-trip airport shuttle. 24/7 support \u2014 in Mexico +52 998 881 9500, from the US 800 895 3000. Reconfirm return 24 hrs before pickup.", go:"Airport meeting maps", url:"https://www.amstardmc.com/en/airport-maps/" },
+  { emoji:"\ud83d\ude97", h:"Uber", p:"Works in Cancun & Playa del Carmen. Spotty for resort pickups in Puerto Aventuras \u2014 better for town trips than airport runs.", go:"Open Uber", url:"https://m.uber.com/" },
+  { emoji:"\ud83d\ude95", h:"Taxi / DiDi", p:"DiDi is the popular local rideshare. Agree the fare before you ride if using a street taxi.", go:"Open DiDi", url:"https://web.didiglobal.com/" },
+  { emoji:"\ud83d\uddfa", h:"Resort \u2192 anywhere", p:"Driving directions and live traffic from the resort to wherever you\u2019re headed.", go:"Open Maps", url:"https://www.google.com/maps/dir/?api=1&origin=Hard+Rock+Hotel+Riviera+Maya&destination=Playa+del+Carmen" },
+  { emoji:"\ud83d\ude8c", h:"ADO bus", p:"Cheap, comfy AC coaches between Playa del Carmen, Cancun, and Tulum if you skip a rental.", go:"Check ADO routes", url:"https://www.ado.com.mx/" },
+  { emoji:"\u26f4", h:"Cozumel ferry", p:"From Playa del Carmen if you want a day on the island \u2014 ~45 min each way.", go:"Ferry schedule", url:"https://www.google.com/search?q=Playa+del+Carmen+Cozumel+ferry+schedule" },
+];
+
+let gaHtml = '<div class="dayhead greentop"><div class="num">\u25b8</div><div class="meta"><h2>Get Around</h2><div class="date">Rides, transfers & maps</div></div></div>';
+gaHtml += '<p class="exintro">Tap any option to open the app or live info. For five people with bags, a pre-booked van beats rideshare for the airport run.</p>';
+gaHtml += '<div class="tiles">';
+rideTiles.forEach(t => {
+  gaHtml += '<a class="tile ride" href="' + t.url + '" target="_blank" rel="noopener">'
+    + '<div class="emoji">' + t.emoji + '</div><h4>' + t.h + '</h4><p>' + t.p + '</p>'
+    + '<div class="go">' + t.go + ' \u2192</div></a>';
+});
+gaHtml += '</div>';
+gaHtml += '<div class="tipbar"><b>Amstar tip:</b> on arrival, ignore greeters inside the terminal \u2014 your blue-shirted Amstar reps wait outside with signs. For the return, reconfirm your pickup time 24 hrs ahead (they aim for ~15 min before the scheduled time). Cancels within 24 hrs are non-refundable.</div>';
+
+const gaDay = document.createElement('section');
+gaDay.className = 'day';
+gaDay.dataset.i = gaIndex;
+gaDay.innerHTML = gaHtml;
+stage.appendChild(gaDay);
+function show(i) {
+  document.querySelectorAll('.day').forEach(d => d.classList.toggle('show', +d.dataset.i === i));
+  document.querySelectorAll('.daynav button').forEach((b, bi) => b.classList.toggle('active', bi === i));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ---------- LIVE DATA FETCH (free, keyless APIs) ----------
+// Resort coords: Puerto Aventuras, ~20.50 N, -87.23 W
+const WX_LAT = 20.50, WX_LON = -87.23;
+const wmo = c => {
+  if (c === 0) return '\u2600\ufe0f';
+  if (c <= 2) return '\ud83c\udf24\ufe0f';
+  if (c === 3) return '\u2601\ufe0f';
+  if (c <= 48) return '\ud83c\udf2b\ufe0f';
+  if (c <= 67) return '\ud83c\udf27\ufe0f';
+  if (c <= 77) return '\ud83c\udf28\ufe0f';
+  if (c <= 82) return '\ud83c\udf26\ufe0f';
+  if (c <= 99) return '\u26c8\ufe0f';
+  return '\ud83c\udf24\ufe0f';
+};
+const dayName = iso => new Date(iso + 'T12:00').toLocaleDateString('en-US', { weekday: 'short' });
+const nowStamp = () => 'Updated ' + new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+function spin(id, on) { const b = document.getElementById(id); if (b) b.classList.toggle('spin', on); }
+
+function loadWeather() {
+  const body = document.getElementById('wxbody');
+  if (!body) return;
+  spin('wxrefresh', true);
+  const url = 'https://api.open-meteo.com/v1/forecast?latitude=' + WX_LAT + '&longitude=' + WX_LON
+    + '&current=temperature_2m,weather_code,relative_humidity_2m'
+    + '&daily=weather_code,temperature_2m_max,temperature_2m_min'
+    + '&temperature_unit=fahrenheit&timezone=America%2FCancun&forecast_days=7';
+  fetch(url).then(r => r.json()).then(d => {
+    const cur = d.current, dl = d.daily;
+    let h = '<div style="display:flex;align-items:flex-end;gap:0.8rem">'
+      + '<div class="nowtemp">' + Math.round(cur.temperature_2m) + '\u00b0<small>F</small></div>'
+      + '<div><div style="font-size:1.6rem">' + wmo(cur.weather_code) + '</div>'
+      + '<div class="nowmeta">' + cur.relative_humidity_2m + '% humidity</div></div></div>';
+    h += '<div class="fcrow">';
+    for (let i = 0; i < dl.time.length; i++) {
+      h += '<div class="fcd"><div class="dy">' + (i === 0 ? 'Today' : dayName(dl.time[i])) + '</div>'
+        + '<div class="ic">' + wmo(dl.weather_code[i]) + '</div>'
+        + '<div class="hi">' + Math.round(dl.temperature_2m_max[i]) + '\u00b0</div>'
+        + '<div class="lo">' + Math.round(dl.temperature_2m_min[i]) + '\u00b0</div></div>';
+    }
+    h += '</div><div class="lstamp">' + nowStamp() + '</div>';
+    body.innerHTML = h;
+  }).catch(() => {
+    body.innerHTML = '<div class="lstate">Couldn\u2019t load live weather. <a href="https://www.google.com/search?q=weather+Puerto+Aventuras+Mexico" target="_blank" rel="noopener">Open forecast \u2192</a></div>';
+  }).finally(() => spin('wxrefresh', false));
+}
+
+function loadRate() {
+  const body = document.getElementById('fxbody');
+  if (!body) return;
+  spin('fxrefresh', true);
+  fetch('https://open.er-api.com/v6/latest/USD').then(r => r.json()).then(d => {
+    const mxn = d.rates && d.rates.MXN;
+    if (!mxn) throw new Error('no rate');
+    body.innerHTML = '<div class="rate">$1 = ' + mxn.toFixed(2) + ' <small>MXN</small></div>'
+      + '<div class="ratehint">So a 20-peso tip \u2248 $' + (20 / mxn).toFixed(2) + ' USD \u00b7 a 500-peso tour \u2248 $' + (500 / mxn).toFixed(0) + '</div>'
+      + '<div class="lstamp">' + nowStamp() + '</div>';
+  }).catch(() => {
+    body.innerHTML = '<div class="lstate">Couldn\u2019t load live rate. <a href="https://www.google.com/search?q=USD+to+MXN" target="_blank" rel="noopener">Check rate \u2192</a></div>';
+  }).finally(() => spin('fxrefresh', false));
+}
+
+loadWeather();
+loadRate();
+document.addEventListener('click', e => {
+  if (e.target.closest('#wxrefresh')) loadWeather();
+  if (e.target.closest('#fxrefresh')) loadRate();
+});
+</script>
+</body>
+</html>
